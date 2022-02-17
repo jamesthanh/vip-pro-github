@@ -4,19 +4,20 @@ import { GithubContext } from "../context/context";
 import { ExampleChart, Pie3D, Column3D, Bar3D, Doughnut2D } from "./Charts";
 const Repos = () => {
   const { repos } = React.useContext(GithubContext);
-  let languages = repos.reduce((total, item) => {
-    const { language } = item;
+  const languages = repos.reduce((total, item) => {
+    const { language, stargazers_count } = item;
     // if null ignore
     if (!language) return total;
 
     if (!total[language]) {
       // create as an object if it doesnt have
-      total[language] = { label: language, value: 1 };
+      total[language] = { label: language, value: 1, stars: stargazers_count };
     } else {
       total[language] = {
         ...total[language], //  keep what the object has
         // override the value
         value: total[language].value + 1,
+        stars: total[language].stars + stargazers_count,
       };
     }
 
@@ -25,18 +26,29 @@ const Repos = () => {
 
   console.log(languages);
 
-  languages = Object.values(languages)
+  // top 5 most used langue
+  const mostUsedLanguages = Object.values(languages)
     .sort((a, b) => {
       return b.value - a.value;
+    })
+    .slice(0, 5);
+
+  // total star
+  const totalStars = Object.values(languages)
+    .sort((a, b) => {
+      return b.stars - a.stars;
+    })
+    .map((item) => {
+      return { ...item, value: item.stars };
     })
     .slice(0, 5);
 
   return (
     <section className="section">
       <Wrapper className="section-center">
-        <Pie3D data={languages} />
+        <Pie3D data={mostUsedLanguages} />
         <div></div>
-        <Doughnut2D data={languages} />
+        <Doughnut2D data={totalStars} />
         <div></div>
       </Wrapper>
     </section>
