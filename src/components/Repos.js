@@ -43,12 +43,30 @@ const Repos = () => {
     })
     .slice(0, 5);
 
+  // most starred repo and most forked
+  let { stars, forks } = repos.reduce(
+    (total, item) => {
+      const { stargazers_count, name, forks } = item;
+      total.stars[stargazers_count] = { label: name, value: stargazers_count };
+      total.forks[forks] = { label: name, value: forks };
+      return total;
+    },
+    {
+      stars: {},
+      forks: {},
+    }
+  );
+
+  stars = Object.values(stars).slice(-5).reverse();
+  forks = Object.values(forks).slice(-5).reverse();
+
   return (
     <section className="section">
       <Wrapper className="section-center">
         <Pie3D data={mostUsedLanguages} />
-        <div></div>
+        <Column3D data={stars} />
         <Doughnut2D data={totalStars} />
+        <Bar3D data={forks} />
         <div></div>
       </Wrapper>
     </section>
