@@ -5,7 +5,7 @@ import { GithubContext } from "../context/context";
 const Search = () => {
   const [user, setUser] = React.useState("");
   // get from global state
-  const { requests } = React.useContext(GithubContext);
+  const { requests, error } = React.useContext(GithubContext);
   const handleSubmit = (e) => {
     e.preventDefault();
     if (user) {
@@ -14,6 +14,11 @@ const Search = () => {
   return (
     <section className="section">
       <Wrapper className="section-center">
+        {error.show && (
+          <ErrorWrapper>
+            <p>{error.msg}</p>
+          </ErrorWrapper>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="form-control">
             <MdSearch />

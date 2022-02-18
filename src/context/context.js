@@ -26,14 +26,23 @@ const GithubProvider = ({ children }) => {
         setRequests(remaining);
         if (remaining === 0) {
           // throw error
+          toggleError(true, "Out of requests, please retry in an hour");
         }
       })
       .catch((err) => console.log(err));
   };
   // error
+  const [error, setError] = useState({ show: false, msg: "" });
+
+  function toggleError(show = false, msg = "") {
+    setError({ show, msg });
+  }
+
   useEffect(checkRequests, []); // when loaded use checkRequests as callback function
   return (
-    <GithubContext.Provider value={{ githubUser, repos, followers, requests }}>
+    <GithubContext.Provider
+      value={{ githubUser, repos, followers, requests, error }}
+    >
       {children}
     </GithubContext.Provider>
   );
